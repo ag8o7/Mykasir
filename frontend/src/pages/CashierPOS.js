@@ -436,7 +436,8 @@ const CashierPOS = ({ user, onLogout }) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </CashierLayout>
   );
 };
 
