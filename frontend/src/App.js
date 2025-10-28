@@ -10,6 +10,7 @@ import TableManagement from '@/pages/TableManagement';
 import TransactionHistory from '@/pages/TransactionHistory';
 import Settings from '@/pages/Settings';
 import UserManagement from '@/pages/UserManagement';
+import Reports from '@/pages/Reports';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
