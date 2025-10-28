@@ -520,6 +520,155 @@ class RestaurantPOSAPITester:
                 headers=headers
             )
 
+    def test_reports_endpoints(self):
+        """Test reporting API endpoints"""
+        print("\n📈 Testing Reports Endpoints...")
+        
+        if not self.admin_token:
+            self.log_test("Reports Test", False, "No admin token available")
+            return
+
+        headers = {'Authorization': f'Bearer {self.admin_token}'}
+        
+        # Test authentication requirement - should fail without token
+        success, response = self.run_api_test(
+            "Daily Report - No Auth",
+            "GET",
+            "reports/daily?date=2025-01-28",
+            401,
+            headers={}
+        )
+        
+        # Test daily report with today's date
+        today = datetime.now().strftime('%Y-%m-%d')
+        success, daily_report = self.run_api_test(
+            "Daily Report - Today",
+            "GET",
+            f"reports/daily?date={today}",
+            200,
+            headers=headers
+        )
+        
+        if success and isinstance(daily_report, dict):
+            required_fields = [
+                'date', 'total_revenue', 'total_transactions', 'average_transaction',
+                'revenue_growth', 'transaction_growth', 'payment_breakdown', 
+                'order_type_breakdown', 'top_selling_items'
+            ]
+            missing_fields = [field for field in required_fields if field not in daily_report]
+            if missing_fields:
+                self.log_test("Daily Report Fields", False, f"Missing fields: {missing_fields}")
+            else:
+                self.log_test("Daily Report Fields", True, "All required fields present")
+        
+        # Test daily report with past date
+        past_date = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+        success, past_daily = self.run_api_test(
+            "Daily Report - Past Date",
+            "GET",
+            f"reports/daily?date={past_date}",
+            200,
+            headers=headers
+        )
+        
+        # Test daily report with invalid date format
+        success, invalid_daily = self.run_api_test(
+            "Daily Report - Invalid Date",
+            "GET",
+            "reports/daily?date=invalid-date",
+            400,
+            headers=headers
+        )
+        
+        # Test weekly report with current week (Monday)
+        # Get Monday of current week
+        today = datetime.now()
+        monday = today - timedelta(days=today.weekday())
+        monday_str = monday.strftime('%Y-%m-%d')
+        
+        success, weekly_report = self.run_api_test(
+            "Weekly Report - Current Week",
+            "GET",
+            f"reports/weekly?start_date={monday_str}",
+            200,
+            headers=headers
+        )
+        
+        if success and isinstance(weekly_report, dict):
+            required_fields = [
+                'start_date', 'end_date', 'total_revenue', 'total_transactions',
+                'average_transaction', 'revenue_growth', 'transaction_growth',
+                'daily_breakdown', 'payment_breakdown', 'order_type_breakdown', 'top_selling_items'
+            ]
+            missing_fields = [field for field in required_fields if field not in weekly_report]
+            if missing_fields:
+                self.log_test("Weekly Report Fields", False, f"Missing fields: {missing_fields}")
+            else:
+                self.log_test("Weekly Report Fields", True, "All required fields present")
+        
+        # Test weekly report with invalid date
+        success, invalid_weekly = self.run_api_test(
+            "Weekly Report - Invalid Date",
+            "GET",
+            "reports/weekly?start_date=invalid-date",
+            400,
+            headers=headers
+        )
+        
+        # Test monthly report with current month
+        current_year = datetime.now().year
+        current_month = datetime.now().month
+        
+        success, monthly_report = self.run_api_test(
+            "Monthly Report - Current Month",
+            "GET",
+            f"reports/monthly?year={current_year}&month={current_month}",
+            200,
+            headers=headers
+        )
+        
+        if success and isinstance(monthly_report, dict):
+            required_fields = [
+                'year', 'month', 'month_name', 'total_revenue', 'total_transactions',
+                'average_transaction', 'revenue_growth', 'transaction_growth',
+                'daily_breakdown', 'weekly_breakdown', 'payment_breakdown', 
+                'order_type_breakdown', 'top_selling_items'
+            ]
+            missing_fields = [field for field in required_fields if field not in monthly_report]
+            if missing_fields:
+                self.log_test("Monthly Report Fields", False, f"Missing fields: {missing_fields}")
+            else:
+                self.log_test("Monthly Report Fields", True, "All required fields present")
+        
+        # Test monthly report with invalid month
+        success, invalid_monthly = self.run_api_test(
+            "Monthly Report - Invalid Month",
+            "GET",
+            f"reports/monthly?year={current_year}&month=13",
+            400,
+            headers=headers
+        )
+        
+        # Test monthly report with invalid year (missing month)
+        success, missing_month = self.run_api_test(
+            "Monthly Report - Missing Month",
+            "GET",
+            f"reports/monthly?year={current_year}",
+            422,  # FastAPI validation error
+            headers=headers
+        )
+        
+        # Test kasir access to reports (should work)
+        if self.kasir_token:
+            kasir_headers = {'Authorization': f'Bearer {self.kasir_token}'}
+            success, kasir_daily = self.run_api_test(
+                "Daily Report - Kasir Access",
+                "GET",
+                f"reports/daily?date={today}",
+                200,
+                headers=kasir_headers
+            )
+
     def run_all_tests(self):
         """Run all tests"""
         print("🚀 Starting Restaurant POS API Tests...")
