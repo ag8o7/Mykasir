@@ -4,6 +4,8 @@ import axios from 'axios';
 import '@/App.css';
 import Login from '@/pages/Login';
 import CashierPOS from '@/pages/CashierPOS';
+import CashierTransactions from '@/pages/CashierTransactions';
+import CashierReports from '@/pages/CashierReports';
 import AdminDashboard from '@/pages/AdminDashboard';
 import MenuManagement from '@/pages/MenuManagement';
 import TableManagement from '@/pages/TableManagement';
