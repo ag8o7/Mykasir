@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, ShoppingBag, Users, Table, Receipt, Settings, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Users, Table, Receipt, Settings, LogOut, User, FileText } from 'lucide-react';
 
 const AdminLayout = ({ children, user, onLogout }) => {
   const location = useLocation();
