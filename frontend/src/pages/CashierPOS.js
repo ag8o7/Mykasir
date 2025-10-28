@@ -164,25 +164,15 @@ const CashierPOS = ({ user, onLogout }) => {
   const changeAmount = amountPaid ? parseFloat(amountPaid) - total : 0;
 
   return (
-    <div className="min-h-screen p-4" data-testid="cashier-pos-page">
-      {/* Header */}
-      <div className="soft-card rounded-2xl p-4 mb-4">
-        <div className="flex justify-between items-center">
+    <CashierLayout user={user} onLogout={onLogout}>
+      <div className="p-4" data-testid="cashier-pos-page">
+        {/* Header */}
+        <div className="soft-card rounded-2xl p-4 mb-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Kasir POS</h1>
             <p className="text-sm text-gray-600">Halo, {user.full_name}</p>
           </div>
-          <Button
-            onClick={onLogout}
-            variant="outline"
-            className="rounded-xl border-red-200 text-red-600 hover:bg-red-50"
-            data-testid="logout-button"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Keluar
-          </Button>
         </div>
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Menu Section */}
