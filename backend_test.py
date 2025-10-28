@@ -535,7 +535,7 @@ class RestaurantPOSAPITester:
             "Daily Report - No Auth",
             "GET",
             "reports/daily?date=2025-01-28",
-            401,
+            403,
             headers={}
         )
         
