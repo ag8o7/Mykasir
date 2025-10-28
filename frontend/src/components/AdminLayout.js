@@ -11,6 +11,7 @@ const AdminLayout = ({ children, user, onLogout }) => {
     { icon: ShoppingBag, label: 'Menu', path: '/admin/menu' },
     { icon: Table, label: 'Meja', path: '/admin/tables' },
     { icon: Receipt, label: 'Transaksi', path: '/admin/transactions' },
+    { icon: FileText, label: 'Laporan', path: '/admin/reports' },
     { icon: Users, label: 'Staff', path: '/admin/users' },
     { icon: Settings, label: 'Pengaturan', path: '/admin/settings' },
   ];
