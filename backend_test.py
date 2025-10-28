@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 class RestaurantPOSAPITester:
-    def __init__(self, base_url="https://kasir-restoran.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://kembangkan-dev.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.admin_token = None
         self.kasir_token = None
