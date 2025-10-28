@@ -580,6 +580,327 @@ async def get_dashboard_stats(current_user: User = Depends(get_current_user)):
         "top_selling_items": top_items
     }
 
+# ==================== REPORTS ROUTES ====================
+
+@api_router.get("/reports/daily")
+async def get_daily_report(date: str, current_user: User = Depends(get_current_user)):
+    """
+    Get daily report for a specific date
+    date format: YYYY-MM-DD
+    """
+    try:
+        target_date = datetime.fromisoformat(date).replace(tzinfo=timezone.utc)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
+    
+    # Start and end of the day
+    start_of_day = target_date.replace(hour=0, minute=0, second=0, microsecond=0)
+    end_of_day = start_of_day + timedelta(days=1)
+    
+    # Previous day for comparison
+    prev_start = start_of_day - timedelta(days=1)
+    prev_end = start_of_day
+    
+    # Get transactions for the day
+    transactions = await db.transactions.find({
+        "created_at": {
+            "$gte": start_of_day.isoformat(),
+            "$lt": end_of_day.isoformat()
+        }
+    }, {"_id": 0}).to_list(10000)
+    
+    # Get previous day transactions
+    prev_transactions = await db.transactions.find({
+        "created_at": {
+            "$gte": prev_start.isoformat(),
+            "$lt": prev_end.isoformat()
+        }
+    }, {"_id": 0}).to_list(10000)
+    
+    # Calculate metrics
+    total_revenue = sum(t['total'] for t in transactions)
+    total_transactions = len(transactions)
+    avg_transaction = total_revenue / total_transactions if total_transactions > 0 else 0
+    
+    prev_revenue = sum(t['total'] for t in prev_transactions)
+    prev_count = len(prev_transactions)
+    
+    revenue_growth = ((total_revenue - prev_revenue) / prev_revenue * 100) if prev_revenue > 0 else 0
+    transaction_growth = ((total_transactions - prev_count) / prev_count * 100) if prev_count > 0 else 0
+    
+    # Payment method breakdown
+    payment_methods = {}
+    for t in transactions:
+        method = t['payment_method']
+        payment_methods[method] = payment_methods.get(method, 0) + t['total']
+    
+    payment_breakdown = [{"method": k, "amount": v} for k, v in payment_methods.items()]
+    
+    # Get orders for the day
+    orders = await db.orders.find({
+        "created_at": {
+            "$gte": start_of_day.isoformat(),
+            "$lt": end_of_day.isoformat()
+        },
+        "status": "completed"
+    }, {"_id": 0}).to_list(10000)
+    
+    # Top selling items
+    item_sales = {}
+    order_type_count = {"dine-in": 0, "takeaway": 0}
+    
+    for order in orders:
+        order_type_count[order['order_type']] = order_type_count.get(order['order_type'], 0) + 1
+        for item in order['items']:
+            key = item['menu_item_name']
+            if key not in item_sales:
+                item_sales[key] = {'name': key, 'quantity': 0, 'revenue': 0}
+            item_sales[key]['quantity'] += item['quantity']
+            item_sales[key]['revenue'] += item['subtotal']
+    
+    top_items = sorted(item_sales.values(), key=lambda x: x['quantity'], reverse=True)[:10]
+    
+    return {
+        "date": date,
+        "total_revenue": total_revenue,
+        "total_transactions": total_transactions,
+        "average_transaction": avg_transaction,
+        "revenue_growth": revenue_growth,
+        "transaction_growth": transaction_growth,
+        "payment_breakdown": payment_breakdown,
+        "order_type_breakdown": [{"type": k, "count": v} for k, v in order_type_count.items()],
+        "top_selling_items": top_items
+    }
+
+@api_router.get("/reports/weekly")
+async def get_weekly_report(start_date: str, current_user: User = Depends(get_current_user)):
+    """
+    Get weekly report starting from start_date
+    start_date format: YYYY-MM-DD (Monday of the week)
+    """
+    try:
+        week_start = datetime.fromisoformat(start_date).replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=timezone.utc)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
+    
+    week_end = week_start + timedelta(days=7)
+    
+    # Previous week for comparison
+    prev_week_start = week_start - timedelta(days=7)
+    prev_week_end = week_start
+    
+    # Get transactions for the week
+    transactions = await db.transactions.find({
+        "created_at": {
+            "$gte": week_start.isoformat(),
+            "$lt": week_end.isoformat()
+        }
+    }, {"_id": 0}).to_list(10000)
+    
+    # Get previous week transactions
+    prev_transactions = await db.transactions.find({
+        "created_at": {
+            "$gte": prev_week_start.isoformat(),
+            "$lt": prev_week_end.isoformat()
+        }
+    }, {"_id": 0}).to_list(10000)
+    
+    # Calculate metrics
+    total_revenue = sum(t['total'] for t in transactions)
+    total_transactions = len(transactions)
+    avg_transaction = total_revenue / total_transactions if total_transactions > 0 else 0
+    
+    prev_revenue = sum(t['total'] for t in prev_transactions)
+    prev_count = len(prev_transactions)
+    
+    revenue_growth = ((total_revenue - prev_revenue) / prev_revenue * 100) if prev_revenue > 0 else 0
+    transaction_growth = ((total_transactions - prev_count) / prev_count * 100) if prev_count > 0 else 0
+    
+    # Daily breakdown
+    daily_data = {}
+    for t in transactions:
+        date_str = t['created_at'][:10]
+        if date_str not in daily_data:
+            daily_data[date_str] = {"revenue": 0, "transactions": 0}
+        daily_data[date_str]["revenue"] += t['total']
+        daily_data[date_str]["transactions"] += 1
+    
+    daily_breakdown = [{"date": k, "revenue": v["revenue"], "transactions": v["transactions"]} 
+                       for k, v in sorted(daily_data.items())]
+    
+    # Payment method breakdown
+    payment_methods = {}
+    for t in transactions:
+        method = t['payment_method']
+        payment_methods[method] = payment_methods.get(method, 0) + t['total']
+    
+    payment_breakdown = [{"method": k, "amount": v} for k, v in payment_methods.items()]
+    
+    # Get orders for the week
+    orders = await db.orders.find({
+        "created_at": {
+            "$gte": week_start.isoformat(),
+            "$lt": week_end.isoformat()
+        },
+        "status": "completed"
+    }, {"_id": 0}).to_list(10000)
+    
+    # Top selling items
+    item_sales = {}
+    order_type_count = {"dine-in": 0, "takeaway": 0}
+    
+    for order in orders:
+        order_type_count[order['order_type']] = order_type_count.get(order['order_type'], 0) + 1
+        for item in order['items']:
+            key = item['menu_item_name']
+            if key not in item_sales:
+                item_sales[key] = {'name': key, 'quantity': 0, 'revenue': 0}
+            item_sales[key]['quantity'] += item['quantity']
+            item_sales[key]['revenue'] += item['subtotal']
+    
+    top_items = sorted(item_sales.values(), key=lambda x: x['quantity'], reverse=True)[:10]
+    
+    return {
+        "start_date": start_date,
+        "end_date": week_end.date().isoformat(),
+        "total_revenue": total_revenue,
+        "total_transactions": total_transactions,
+        "average_transaction": avg_transaction,
+        "revenue_growth": revenue_growth,
+        "transaction_growth": transaction_growth,
+        "daily_breakdown": daily_breakdown,
+        "payment_breakdown": payment_breakdown,
+        "order_type_breakdown": [{"type": k, "count": v} for k, v in order_type_count.items()],
+        "top_selling_items": top_items
+    }
+
+@api_router.get("/reports/monthly")
+async def get_monthly_report(year: int, month: int, current_user: User = Depends(get_current_user)):
+    """
+    Get monthly report for a specific year and month
+    year: YYYY (e.g., 2025)
+    month: 1-12
+    """
+    if month < 1 or month > 12:
+        raise HTTPException(status_code=400, detail="Month must be between 1 and 12")
+    
+    # Start and end of the month
+    month_start = datetime(year, month, 1, tzinfo=timezone.utc)
+    if month == 12:
+        month_end = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+    else:
+        month_end = datetime(year, month + 1, 1, tzinfo=timezone.utc)
+    
+    # Previous month for comparison
+    if month == 1:
+        prev_month_start = datetime(year - 1, 12, 1, tzinfo=timezone.utc)
+        prev_month_end = month_start
+    else:
+        prev_month_start = datetime(year, month - 1, 1, tzinfo=timezone.utc)
+        prev_month_end = month_start
+    
+    # Get transactions for the month
+    transactions = await db.transactions.find({
+        "created_at": {
+            "$gte": month_start.isoformat(),
+            "$lt": month_end.isoformat()
+        }
+    }, {"_id": 0}).to_list(10000)
+    
+    # Get previous month transactions
+    prev_transactions = await db.transactions.find({
+        "created_at": {
+            "$gte": prev_month_start.isoformat(),
+            "$lt": prev_month_end.isoformat()
+        }
+    }, {"_id": 0}).to_list(10000)
+    
+    # Calculate metrics
+    total_revenue = sum(t['total'] for t in transactions)
+    total_transactions = len(transactions)
+    avg_transaction = total_revenue / total_transactions if total_transactions > 0 else 0
+    
+    prev_revenue = sum(t['total'] for t in prev_transactions)
+    prev_count = len(prev_transactions)
+    
+    revenue_growth = ((total_revenue - prev_revenue) / prev_revenue * 100) if prev_revenue > 0 else 0
+    transaction_growth = ((total_transactions - prev_count) / prev_count * 100) if prev_count > 0 else 0
+    
+    # Daily breakdown
+    daily_data = {}
+    for t in transactions:
+        date_str = t['created_at'][:10]
+        if date_str not in daily_data:
+            daily_data[date_str] = {"revenue": 0, "transactions": 0}
+        daily_data[date_str]["revenue"] += t['total']
+        daily_data[date_str]["transactions"] += 1
+    
+    daily_breakdown = [{"date": k, "revenue": v["revenue"], "transactions": v["transactions"]} 
+                       for k, v in sorted(daily_data.items())]
+    
+    # Weekly breakdown
+    weekly_data = {}
+    for t in transactions:
+        trans_date = datetime.fromisoformat(t['created_at'])
+        # Get the week number
+        week_num = trans_date.isocalendar()[1]
+        week_key = f"Week {week_num}"
+        if week_key not in weekly_data:
+            weekly_data[week_key] = {"revenue": 0, "transactions": 0}
+        weekly_data[week_key]["revenue"] += t['total']
+        weekly_data[week_key]["transactions"] += 1
+    
+    weekly_breakdown = [{"week": k, "revenue": v["revenue"], "transactions": v["transactions"]} 
+                        for k, v in sorted(weekly_data.items())]
+    
+    # Payment method breakdown
+    payment_methods = {}
+    for t in transactions:
+        method = t['payment_method']
+        payment_methods[method] = payment_methods.get(method, 0) + t['total']
+    
+    payment_breakdown = [{"method": k, "amount": v} for k, v in payment_methods.items()]
+    
+    # Get orders for the month
+    orders = await db.orders.find({
+        "created_at": {
+            "$gte": month_start.isoformat(),
+            "$lt": month_end.isoformat()
+        },
+        "status": "completed"
+    }, {"_id": 0}).to_list(10000)
+    
+    # Top selling items
+    item_sales = {}
+    order_type_count = {"dine-in": 0, "takeaway": 0}
+    
+    for order in orders:
+        order_type_count[order['order_type']] = order_type_count.get(order['order_type'], 0) + 1
+        for item in order['items']:
+            key = item['menu_item_name']
+            if key not in item_sales:
+                item_sales[key] = {'name': key, 'quantity': 0, 'revenue': 0}
+            item_sales[key]['quantity'] += item['quantity']
+            item_sales[key]['revenue'] += item['subtotal']
+    
+    top_items = sorted(item_sales.values(), key=lambda x: x['quantity'], reverse=True)[:10]
+    
+    return {
+        "year": year,
+        "month": month,
+        "month_name": month_start.strftime("%B"),
+        "total_revenue": total_revenue,
+        "total_transactions": total_transactions,
+        "average_transaction": avg_transaction,
+        "revenue_growth": revenue_growth,
+        "transaction_growth": transaction_growth,
+        "daily_breakdown": daily_breakdown,
+        "weekly_breakdown": weekly_breakdown,
+        "payment_breakdown": payment_breakdown,
+        "order_type_breakdown": [{"type": k, "count": v} for k, v in order_type_count.items()],
+        "top_selling_items": top_items
+    }
+
 # ==================== USER MANAGEMENT ROUTES ====================
 
 @api_router.get("/users", response_model=List[User])
