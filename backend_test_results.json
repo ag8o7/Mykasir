@@ -1,36 +1,52 @@
 {
   "summary": {
-    "tests_run": 12,
-    "tests_passed": 1,
-    "success_rate": 8.333333333333332
+    "tests_run": 25,
+    "tests_passed": 24,
+    "success_rate": 96.0
   },
   "results": [
     {
       "test_name": "Admin Login",
-      "success": false,
-      "message": "Status: 401 (expected 200)",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
       "response_data": {
-        "detail": "Incorrect username or password"
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc2MTY1NjI4Mn0.AS3sy9lhj2m4AhGFBo0jeYS6alz6fmHmCeVAlCKPZC4",
+        "token_type": "bearer",
+        "user": {
+          "id": "d4cfd35e-b288-4108-abf6-e917a0fe0e3d",
+          "username": "admin",
+          "full_name": "Administrator",
+          "role": "admin",
+          "created_at": "2025-10-28T04:57:57.326217Z"
+        }
       }
     },
     {
       "test_name": "Admin Token Retrieved",
-      "success": false,
-      "message": "Failed to get admin token",
+      "success": true,
+      "message": "Token stored successfully",
       "response_data": null
     },
     {
       "test_name": "Kasir Login",
-      "success": false,
-      "message": "Status: 401 (expected 200)",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
       "response_data": {
-        "detail": "Incorrect username or password"
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJrYXNpcjEiLCJleHAiOjE3NjE2NTYyODJ9.kLxD9z4rAtqYyJ0TZE04_GDLvVKk5Hqw7EPPEgX2Xdc",
+        "token_type": "bearer",
+        "user": {
+          "id": "d9d66f89-e16f-430b-809e-92f60b362d3a",
+          "username": "kasir1",
+          "full_name": "Kasir Satu",
+          "role": "kasir",
+          "created_at": "2025-10-28T04:57:57.596289Z"
+        }
       }
     },
     {
       "test_name": "Kasir Token Retrieved",
-      "success": false,
-      "message": "Failed to get kasir token",
+      "success": true,
+      "message": "Token stored successfully",
       "response_data": null
     },
     {
@@ -42,46 +58,196 @@
       }
     },
     {
-      "test_name": "Categories Test",
-      "success": false,
-      "message": "No admin token available",
-      "response_data": null
+      "test_name": "Get Categories",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": []
     },
     {
-      "test_name": "Menu Items Test",
-      "success": false,
-      "message": "No admin token available",
-      "response_data": null
+      "test_name": "Create Category",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "id": "1cd5f195-b29e-4bf1-812f-134f839fe1b3",
+        "name": "Test Category",
+        "description": "Test description",
+        "created_at": "2025-10-28T04:58:02.529510Z"
+      }
     },
     {
-      "test_name": "Tables Test",
-      "success": false,
-      "message": "No admin token available",
-      "response_data": null
+      "test_name": "Update Category",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "id": "1cd5f195-b29e-4bf1-812f-134f839fe1b3",
+        "name": "Updated Category",
+        "description": "Updated description",
+        "created_at": "2025-10-28T04:58:02.529510Z"
+      }
+    },
+    {
+      "test_name": "Delete Category",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "message": "Category deleted successfully"
+      }
+    },
+    {
+      "test_name": "Get Menu Items",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": []
+    },
+    {
+      "test_name": "Get Categories for Menu Item",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": []
+    },
+    {
+      "test_name": "Get Tables",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": []
+    },
+    {
+      "test_name": "Create Table",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "id": "e65e18d0-4fdf-4439-80fa-9d481e1f28ab",
+        "table_number": "TEST-1",
+        "capacity": 4,
+        "status": "available",
+        "created_at": "2025-10-28T04:58:02.755708Z"
+      }
+    },
+    {
+      "test_name": "Update Table",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "id": "e65e18d0-4fdf-4439-80fa-9d481e1f28ab",
+        "table_number": "TEST-1-UPDATED",
+        "capacity": 6,
+        "status": "available",
+        "created_at": "2025-10-28T04:58:02.755708Z"
+      }
+    },
+    {
+      "test_name": "Delete Table",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "message": "Table deleted successfully"
+      }
+    },
+    {
+      "test_name": "Get Menu Items for Order",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": []
+    },
+    {
+      "test_name": "Get Tables for Order",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": []
     },
     {
       "test_name": "Orders Test",
       "success": false,
-      "message": "No kasir token available",
+      "message": "No menu items available for testing",
       "response_data": null
     },
     {
-      "test_name": "Dashboard Stats Test",
-      "success": false,
-      "message": "No admin token available",
+      "test_name": "Get Dashboard Stats",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "total_revenue_today": 0,
+        "total_transactions_today": 0,
+        "pending_orders": 0,
+        "total_menu_items": 0,
+        "revenue_chart": [],
+        "top_selling_items": []
+      }
+    },
+    {
+      "test_name": "Dashboard Stats Fields",
+      "success": true,
+      "message": "All required fields present",
       "response_data": null
     },
     {
-      "test_name": "Settings Test",
-      "success": false,
-      "message": "No admin token available",
-      "response_data": null
+      "test_name": "Get Settings",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "id": "790371d6-8860-4376-9ce5-2333b93f7eef",
+        "restaurant_name": "Restoran Saya",
+        "address": "Jl. Contoh No. 123, Jakarta",
+        "phone": "021-12345678",
+        "tax_percentage": 10.0,
+        "logo_url": null,
+        "updated_at": "2025-10-28T04:56:56.134633Z"
+      }
     },
     {
-      "test_name": "User Management Test",
-      "success": false,
-      "message": "No admin token available",
-      "response_data": null
+      "test_name": "Update Settings",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "id": "790371d6-8860-4376-9ce5-2333b93f7eef",
+        "restaurant_name": "Test Restaurant Updated",
+        "address": "Test Address Updated",
+        "phone": "021-87654321",
+        "tax_percentage": 12.5,
+        "logo_url": null,
+        "updated_at": "2025-10-28T04:58:03.052871Z"
+      }
+    },
+    {
+      "test_name": "Get Users",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": [
+        {
+          "id": "d4cfd35e-b288-4108-abf6-e917a0fe0e3d",
+          "username": "admin",
+          "full_name": "Administrator",
+          "role": "admin",
+          "created_at": "2025-10-28T04:57:57.326217Z"
+        },
+        {
+          "id": "d9d66f89-e16f-430b-809e-92f60b362d3a",
+          "username": "kasir1",
+          "full_name": "Kasir Satu",
+          "role": "kasir",
+          "created_at": "2025-10-28T04:57:57.596289Z"
+        }
+      ]
+    },
+    {
+      "test_name": "Create User",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "id": "2b9b4a52-7ede-4d5d-b141-a22313377eb2",
+        "username": "testuser_045803",
+        "full_name": "Test User",
+        "role": "kasir",
+        "created_at": "2025-10-28T04:58:03.342676Z"
+      }
+    },
+    {
+      "test_name": "Delete User",
+      "success": true,
+      "message": "Status: 200 (expected 200)",
+      "response_data": {
+        "message": "User deleted successfully"
+      }
     }
   ]
 }
