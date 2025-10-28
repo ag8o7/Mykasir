@@ -107,39 +107,48 @@ user_problem_statement: "Kembangkan project ini - Menambahkan Fitur Laporan (har
 backend:
   - task: "API endpoint laporan harian (/api/reports/daily)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Implemented daily report endpoint with metrics: total revenue, total transactions, average transaction, revenue growth, transaction growth, payment breakdown, order type breakdown, and top selling items"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Daily report endpoint working correctly. Tested authentication (requires Bearer token), valid/invalid date formats, response structure with all required fields (date, total_revenue, total_transactions, average_transaction, revenue_growth, transaction_growth, payment_breakdown, order_type_breakdown, top_selling_items). Both admin and kasir users can access. Returns proper error codes for invalid dates (400) and missing auth (403)."
   
   - task: "API endpoint laporan mingguan (/api/reports/weekly)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Implemented weekly report endpoint with daily breakdown, payment breakdown, order type breakdown, and top selling items"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Weekly report endpoint working correctly. Tested with Monday start dates, response includes all required fields (start_date, end_date, total_revenue, total_transactions, average_transaction, revenue_growth, transaction_growth, daily_breakdown, payment_breakdown, order_type_breakdown, top_selling_items). Proper error handling for invalid dates (400)."
   
   - task: "API endpoint laporan bulanan (/api/reports/monthly)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Implemented monthly report endpoint with daily breakdown, weekly breakdown, payment breakdown, order type breakdown, and top selling items"
+        - working: true
+          agent: "testing"
+          comment: "✅ PASSED - Monthly report endpoint working correctly. Tested with year/month parameters, response includes all required fields (year, month, month_name, total_revenue, total_transactions, average_transaction, revenue_growth, transaction_growth, daily_breakdown, weekly_breakdown, payment_breakdown, order_type_breakdown, top_selling_items). Proper validation for invalid months (400) and missing parameters (422)."
 
 frontend:
   - task: "Halaman Reports dengan tab harian/mingguan/bulanan"
