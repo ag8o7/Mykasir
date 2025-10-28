@@ -21,7 +21,7 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
-function Reports() {
+function Reports({ user, onLogout }) {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [reportType, setReportType] = useState('daily');
