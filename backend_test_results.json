@@ -1,0 +1,87 @@
+{
+  "summary": {
+    "tests_run": 12,
+    "tests_passed": 1,
+    "success_rate": 8.333333333333332
+  },
+  "results": [
+    {
+      "test_name": "Admin Login",
+      "success": false,
+      "message": "Status: 401 (expected 200)",
+      "response_data": {
+        "detail": "Incorrect username or password"
+      }
+    },
+    {
+      "test_name": "Admin Token Retrieved",
+      "success": false,
+      "message": "Failed to get admin token",
+      "response_data": null
+    },
+    {
+      "test_name": "Kasir Login",
+      "success": false,
+      "message": "Status: 401 (expected 200)",
+      "response_data": {
+        "detail": "Incorrect username or password"
+      }
+    },
+    {
+      "test_name": "Kasir Token Retrieved",
+      "success": false,
+      "message": "Failed to get kasir token",
+      "response_data": null
+    },
+    {
+      "test_name": "Invalid Login",
+      "success": true,
+      "message": "Status: 401 (expected 401)",
+      "response_data": {
+        "detail": "Incorrect username or password"
+      }
+    },
+    {
+      "test_name": "Categories Test",
+      "success": false,
+      "message": "No admin token available",
+      "response_data": null
+    },
+    {
+      "test_name": "Menu Items Test",
+      "success": false,
+      "message": "No admin token available",
+      "response_data": null
+    },
+    {
+      "test_name": "Tables Test",
+      "success": false,
+      "message": "No admin token available",
+      "response_data": null
+    },
+    {
+      "test_name": "Orders Test",
+      "success": false,
+      "message": "No kasir token available",
+      "response_data": null
+    },
+    {
+      "test_name": "Dashboard Stats Test",
+      "success": false,
+      "message": "No admin token available",
+      "response_data": null
+    },
+    {
+      "test_name": "Settings Test",
+      "success": false,
+      "message": "No admin token available",
+      "response_data": null
+    },
+    {
+      "test_name": "User Management Test",
+      "success": false,
+      "message": "No admin token available",
+      "response_data": null
+    }
+  ]
+}
