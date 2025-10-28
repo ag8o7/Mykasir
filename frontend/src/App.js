@@ -104,6 +104,24 @@ function App() {
           />
           
           <Route 
+            path="/cashier/transactions" 
+            element={
+              user ? 
+                <CashierTransactions user={user} onLogout={handleLogout} /> : 
+                <Navigate to="/login" />
+            } 
+          />
+          
+          <Route 
+            path="/cashier/reports" 
+            element={
+              user ? 
+                <CashierReports user={user} onLogout={handleLogout} /> : 
+                <Navigate to="/login" />
+            } 
+          />
+          
+          <Route 
             path="/admin" 
             element={
               user?.role === 'admin' ? 
