@@ -162,6 +162,9 @@ frontend:
         - working: "NA"
           agent: "main"
           comment: "Created Reports page with tabs for daily, weekly, and monthly reports. Includes date picker, key metrics cards, payment breakdown, order type breakdown, top selling items table, and daily/weekly breakdowns"
+        - working: "NA"
+          agent: "main"
+          comment: "Fixed props issue - added user and onLogout props to Reports component"
   
   - task: "Menu navigasi Laporan di AdminLayout"
     implemented: true
@@ -186,6 +189,66 @@ frontend:
         - working: "NA"
           agent: "main"
           comment: "Added route for Reports page accessible only for admin users"
+  
+  - task: "CashierLayout component untuk navigasi kasir"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/CashierLayout.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Created CashierLayout component with navigation menu for POS, Transactions, and Reports for cashier role"
+  
+  - task: "Halaman CashierTransactions untuk riwayat transaksi"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CashierTransactions.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Created CashierTransactions page with search functionality, transaction list, view receipt, and print receipt features for cashier"
+  
+  - task: "Halaman CashierReports untuk laporan kasir"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CashierReports.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Created CashierReports page with daily/weekly/monthly tabs, print and reset functionality for cashier role"
+  
+  - task: "Update CashierPOS dengan CashierLayout"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CashierPOS.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Updated CashierPOS to use CashierLayout wrapper for consistent navigation"
+  
+  - task: "Routes untuk kasir (transactions dan reports)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added routes /cashier/transactions and /cashier/reports for cashier role"
 
 metadata:
   created_by: "main_agent"
