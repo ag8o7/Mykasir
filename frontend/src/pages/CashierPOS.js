@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
+import CashierLayout from '@/components/CashierLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { LogOut, ShoppingCart, Plus, Minus, Trash2, CreditCard, DollarSign, Printer } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Trash2, CreditCard, DollarSign, Printer } from 'lucide-react';
 import ReceiptPrint from '@/components/ReceiptPrint';
 
 const CashierPOS = ({ user, onLogout }) => {
