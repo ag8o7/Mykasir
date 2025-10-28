@@ -683,6 +683,7 @@ class RestaurantPOSAPITester:
         self.test_dashboard_stats()
         self.test_settings()
         self.test_user_management()
+        self.test_reports_endpoints()
         
         # Print summary
         print(f"\n📊 Test Summary:")
